@@ -23,7 +23,7 @@ defmodule EternalTest do
     owner = Eternal.owner(tab)
     heir = Eternal.heir(tab)
 
-    GenServer.stop(owner)
+    stop(owner)
 
     :timer.sleep(5)
 
@@ -39,7 +39,7 @@ defmodule EternalTest do
     owner = Eternal.owner(tab)
     heir = Eternal.heir(tab)
 
-    GenServer.stop(heir)
+    stop(heir)
 
     :timer.sleep(5)
 
@@ -102,6 +102,10 @@ defmodule EternalTest do
     end)
 
     tab
+  end
+
+  defp stop(pid) do
+    :gen.stop(pid, :normal, :infinity)
   end
 
 end
