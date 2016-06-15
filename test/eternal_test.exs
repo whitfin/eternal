@@ -89,8 +89,6 @@ defmodule EternalTest do
       :timer.sleep(250)
     end)
 
-    IO.puts(msg)
-
     assert(Regex.match?(~r/\[debug\] \[eternal\] Table \d+ gifted to #PID<\d\.\d+\.\d> via #PID<\d\.\d+\.\d>/, msg))
   end
 
