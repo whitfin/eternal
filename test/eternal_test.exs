@@ -86,8 +86,10 @@ defmodule EternalTest do
   test "logging output when creating a table" do
     msg = capture_log(fn ->
       Eternal.new(:terminating_table)
-      :timer.sleep(50)
+      :timer.sleep(250)
     end)
+
+    IO.puts(msg)
 
     assert(Regex.match?(~r/\[debug\] \[eternal\] Table \d+ gifted to #PID<\d\.\d{3}\.\d> via #PID<\d\.\d{3}\.\d>/, msg))
   end
