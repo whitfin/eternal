@@ -91,7 +91,7 @@ defmodule EternalTest do
 
     IO.puts(msg)
 
-    assert(Regex.match?(~r/\[debug\] \[eternal\] Table \d+ gifted to #PID<\d\.\d{3}\.\d> via #PID<\d\.\d{3}\.\d>/, msg))
+    assert(Regex.match?(~r/\[debug\] \[eternal\] Table \d+ gifted to #PID<\d\.\d+\.\d> via #PID<\d\.\d+\.\d>/, msg))
   end
 
   defp create(name, tab_opts \\ [], opts \\ []) do
