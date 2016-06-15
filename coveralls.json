@@ -1,0 +1,18 @@
+{
+  "default_stop_words": [
+    "defmodule",
+    "defrecord",
+    "defimpl",
+    "defexception",
+    "defprotocol",
+    "defstruct",
+    "defdelegate",
+    "def.+(.+\\\\.+).+do",
+    "^\\s+use\\s+"
+  ],
+  "custom_stop_words": [ ],
+  "coverage_options": {
+    "treat_no_relevant_lines_as_covered": true
+  },
+  "skip_files": [ ]
+}
