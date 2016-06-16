@@ -143,7 +143,7 @@ defmodule Eternal do
   # then we just set another monitor to execute to repeat the check. Otherwise
   # we start up a new heir to make sure that we don't run the risk of dying.
   def handle_info({ :"ETS-HEIR-MONITOR", table }, { table, opts } = state) do
-    unless Process.alive?(heir(table)) do
+    unless is_pid(heir = heir(table)) && Process.alive?(heir) do
       rescue_heir(state)
     end
     monitor(table, self, opts)
