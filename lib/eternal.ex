@@ -43,6 +43,7 @@ defmodule Eternal do
 
   - `:monitor` - determines which frequency will be used to check the state of
     the `heir` server. It defaults to a minute, and should be set in milliseconds.
+    Setting this to `false` will disable this type of monitoring.
   - `:quiet` - by default, Eternal logs debug messages. Setting this to true will
     disable this logging.
 
@@ -69,8 +70,6 @@ defmodule Eternal do
 
     heir(table, pid2)
     gift(table, pid1)
-
-    monitor(table, pid1, opts)
 
     table
   end
@@ -168,11 +167,10 @@ defmodule Eternal do
   # Attempts to catch termination notifications and forwards a message back to the
   # owner of the table in order to inform it that the heir has died and a new one
   # should be created.
-  def terminate({ :shutdown, :safe_exit }, _state),
-  do: nil
+  def terminate({ :shutdown, :safe_exit }, _state), do: nil
   def terminate(_reason, { table, _opts }) do
-    if owner(table) != :undefined do
-      send(owner(table), { :"ETS-HEIR-TERMINATE", table })
+    if (owner = owner(table)) != :undefined do
+      send(owner, { :"ETS-HEIR-TERMINATE", table })
     end
   end
 
@@ -201,6 +199,14 @@ defmodule Eternal do
     end)
   end
 
+  # Determines the interval for a monitor. If the provided value is a positive
+  # number, we return it. Otherwise if it's set to false, we return `nil` (which)
+  # will cause the monitor to be disabled. For any other value, we return a default
+  # value of a minute (1000 * 60 * 60 milliseconds).
+  defp interval(value) when is_number(value) and value > 0, do: value
+  defp interval(false), do: nil
+  defp interval(_vals), do: :timer.minutes(1)
+
   # Logs a debug message with a project prefix.
   defp log(msg, opts) do
     unless Keyword.get(opts, :quiet) do
@@ -211,8 +217,9 @@ defmodule Eternal do
   # Sets a monitor to execute after a given delay. This is used to refresh the
   # heir server if anything has happened to it.
   defp monitor(table, owner, opts) do
-    time = Keyword.get(opts, :monitor, :timer.minutes(1))
-    :erlang.send_after(time, owner, { :"ETS-HEIR-MONITOR", table })
+    if time = interval(opts[:monitor]) do
+      :erlang.send_after(time, owner, { :"ETS-HEIR-MONITOR", table })
+    end
   end
 
   # Rescues an heir server by logging out the death, starting a new server, and
