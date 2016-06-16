@@ -23,7 +23,7 @@ defmodule Eternal.Mixfile do
         },
         maintainers: [ "Isaac Whitfield" ]
       },
-      version: "1.0.2",
+      version: "1.0.3",
       elixir: "~> 1.1",
       deps: deps,
       docs: [
