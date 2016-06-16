@@ -22,6 +22,9 @@ defmodule Eternal do
   ensure that you don't lose anything inside ETS.
   """
 
+  # add an alias for Application
+  alias Application, as: App
+
   # require the Logger macros
   require Logger
 
@@ -64,6 +67,8 @@ defmodule Eternal do
   when is_atom(name) and is_list(ets_opts) and is_list(opts) do
     table = :ets.new(name, [ :public ] ++ ets_opts)
     flags = Keyword.take(opts, [ :monitor, :quiet ])
+
+    ensure_started(flags)
 
     { :ok, pid1 } = GenServer.start(__MODULE__, { table, flags })
     { :ok, pid2 } = GenServer.start(__MODULE__, { table, flags })
@@ -178,6 +183,15 @@ defmodule Eternal do
   # Private utilities for internal use.
   ###
 
+  # Ensure that any required components are started. At this point we just start
+  # the Logger if we're in a noisy environment, to avoid users having to do this
+  # manually (which is fine normally, but inside slave nodes it's nightmarish).
+  defp ensure_started(opts) do
+    noisy(opts, fn ->
+      App.ensure_all_started(:logger)
+    end)
+  end
+
   # Binding for try/rescue to deal with ETS not existing.
   defp ets_try(fun) do
     fun.()
@@ -209,9 +223,9 @@ defmodule Eternal do
 
   # Logs a debug message with a project prefix.
   defp log(msg, opts) do
-    unless Keyword.get(opts, :quiet) do
+    noisy(opts, fn ->
       Logger.debug("[eternal] #{msg}")
-    end
+    end)
   end
 
   # Sets a monitor to execute after a given delay. This is used to refresh the
@@ -220,6 +234,13 @@ defmodule Eternal do
     if time = interval(opts[:monitor]) do
       :erlang.send_after(time, owner, { :"ETS-HEIR-MONITOR", table })
     end
+  end
+
+  # Only executes a function if we're in a noisy environment. Basically means that
+  # we don't have the `:quiet` flag passed in.
+  defp noisy(opts, fun) do
+    !Keyword.get(opts, :quiet) && fun.()
+    :ok
   end
 
   # Rescues an heir server by logging out the death, starting a new server, and
