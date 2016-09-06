@@ -8,7 +8,7 @@ otp_release:
   - 18.3
   - 18.2
 script:
-  - mix coveralls.travis --trace
+  - if [[ "$TRAVIS_ELIXIR_VERSION" = "1.1.1" ]]; then mix test --trace; else mix coveralls.travis --trace; fi
 env:
   - MIX_ENV=test
 branches:
