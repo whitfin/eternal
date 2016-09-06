@@ -41,7 +41,7 @@ defmodule Eternal.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:deppie,:logger]]
   end
 
   # Dependencies can be Hex packages:
@@ -55,9 +55,12 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      { :earmark,     "~> 0.2.1",  optional: true, only: [ :dev, :test ] },
-      { :ex_doc,      "~> 0.11.5", optional: true, only: [ :dev, :test ] },
-      { :excoveralls, "~> 0.5.4",  optional: true, only: [ :dev, :test ] }
+      # Production Dependencies
+      { :deppie, "~> 1.0" },
+      # Development Dependencies
+      { :earmark,     "~> 1.0",  optional: true, only: [ :dev, :test ] },
+      { :ex_doc,      "~> 0.13", optional: true, only: [ :dev, :test ] },
+      { :excoveralls, "~> 0.5",  optional: true, only: [ :dev, :test ] }
     ]
   end
 end

@@ -25,18 +25,83 @@ Eternal is available on [Hex](https://hex.pm/). You can install the package via:
 
 ## Usage
 
-The API of Eternal is quite small in order to reduce the risk of potential crashes (as that would cause you to lose your ETS tables). The main function you need is simply `Eternal.new/3`, which behaves in a similar way to `:ets.new/2`. The first two arguments are identical to `:ets.new/2`, and the latter is just a Keyword List of options to configure Eternal (this argument is optional).
+### Manual Startup
+
+The API of Eternal is quite small in order to reduce the risk of potential crashes (as that would cause you to lose your ETS tables). You'll probably just want to use `start_link/3` which behaves quite similarly to `:ets.new/2`. The first two arguments are identical to `:ets.new/2`, and the latter is just a Keyword List of options to configure Eternal.
+
+It should be noted that the table will always have the `:public` (for table access) and `:named_table` (for table naming) arguments passed in, whether specified or not. Both the second and third arguments are optional.
 
 ```elixir
-iex> Eternal.new(:table_name, [ :set, { :read_concurrency, true }])
-126995
-iex> Eternal.new(:table_name, [ :named_table, :set, { :read_concurrency, true }])
-:table_name
+iex> Eternal.start_link(:table1, [ :set, { :read_concurrency, true }])
+{ :ok, #PID<0.402.0> }
+iex> Eternal.start_link(:table2, [ :set, { :read_concurrency, true }], [ quiet: true ])
+{ :ok, #PID<0.406.0> }
 ```
 
-The returned value is the id of your ETS table (remember if you want the name, you have to provide the `:named_table` option). You can use this returned value to interact safely with ETS, and Eternal will monitor your table in the background.
-
 For further usage examples, please see the [documentation](https://hexdocs.pm/eternal/).
+
+### Application Supervision
+
+I'd highly recommend setting up an Application and letting Eternal start up inside the Supervision tree this way - just make sure that your strategy is `:one_for_one`, otherwise a crash in a different child in the tree would restart your ETS table.
+
+```elixir
+defmodule MyApplication do
+  # define application
+  use Application
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    # Define workers and child supervisors to be supervised
+    children = [
+      supervisor(Eternal, [:table, [ :compressed ], [ quiet: true ]])
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [ strategy: :one_for_one ]
+    Supervisor.start_link(children, opts)
+  end
+end
+```
+
+If you need a strategy other than `:one_for_one` (which is rare), you can simply hoist Eternal to a tree above your main application tree. This is a little more complicated, but ensures your tables are safe. You can do this using something like the following (you can see how Eternal is distanced from your app logic which may cause a restart):
+
+```elixir
+defmodule MyApplication do
+  # define application
+  use Application
+
+  # See http://elixir-lang.org/docs/stable/elixir/Application.html
+  # for more information on OTP Applications
+  def start(_type, _args) do
+    import Supervisor.Spec, warn: false
+
+    # Note how we create our main application tree separately to our Eternal
+    # tree, thus making Eternal resistant to crashes around your application.
+    children = [
+      supervisor(Eternal, [:table, [ :compressed ], [ quiet: true ]]),
+      supervisor(Supervisor, [MyApplication.OneForAllSupervisor, [ ]])
+    ]
+
+    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # for other strategies and supported options
+    opts = [ strategy: :one_for_one ]
+    Supervisor.start_link(children, opts)
+  end
+end
+
+defmodule MyApplication.OneForAllSupervisor do
+  use Supervisor
+
+  def init([]) do
+    children = [ worker(MyModuleWhichMightCrash, []) ]
+    supervise(children, strategy: :one_for_all)
+  end
+end
+```
 
 ## Contributions
 
