@@ -72,10 +72,9 @@ defmodule EternalTest do
   end
 
   test "starting a table twice finds the previous owner" do
-    { :ok, pid1 } = Eternal.start_link(:existing_table, [], [ quiet: true ])
-    { :ok, pid2 } = Eternal.start_link(:existing_table, [], [ quiet: true ])
-
-    assert(pid1 == pid2)
+    { :ok, pid } = Eternal.start_link(:existing_table, [], [ quiet: true ])
+    result2 = Eternal.start_link(:existing_table, [], [ quiet: true ])
+    assert(result2 == { :error, { :already_started, pid } })
   end
 
   test "deprecation warnings when using new/3" do

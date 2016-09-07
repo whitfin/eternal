@@ -66,7 +66,7 @@ defmodule Eternal.Supervisor do
   # table twice. Otherwise, we execute the callback which will create the table.
   defp detect_clash(name, ets_opts, fun) do
     if exists?(name, ets_opts) do
-      { :ok, Process.whereis(name), name }
+      { :error, { :already_started, Process.whereis(name) } }
     else
       fun.()
     end
