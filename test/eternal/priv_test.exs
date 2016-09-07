@@ -5,20 +5,6 @@ defmodule Eternal.PrivTest do
 
   import Priv
 
-  test "exec_with/3 and a matching condition" do
-    val = exec_with { a, b, c }, { 1, 2, 3 } do
-      a + b + c
-    end
-    assert(val == 6)
-  end
-
-  test "exec_with/3 and a non-matching condition" do
-    val = exec_with { a, b, c }, { 1 } do
-      a + b + c
-    end
-    assert(val == { 1 })
-  end
-
   test "is_opts/3 with valid arguments" do
     assert(detect(:test, [], []) == true)
   end

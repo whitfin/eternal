@@ -32,7 +32,7 @@ defmodule Eternal.Supervisor do
     super_opts = [ name: Table.to_name(super_tab, true) ]
     super_proc = Supervisor.start_link(__MODULE__, super_args, super_opts)
 
-    Priv.exec_with { :ok, pid }, super_proc do
+    with { :ok, pid } <- super_proc do
       { :ok, pid, super_tab }
     end
   end

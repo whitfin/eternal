@@ -72,22 +72,6 @@ defmodule Eternal.Priv do
   def spid(pid), do: inspect(pid)
 
   @doc """
-  Executes a block assuming the right hand value matches the pattern on the left.
-
-  This is a trivial replacement for the `with` macro, as we're compatible with
-  Elixir v1.1 still.
-  """
-  defmacro exec_with(left, right, do: fun) do
-    quote do
-      case unquote(right) do
-        unquote(left) ->
-          unquote(fun)
-        v -> v
-      end
-    end
-  end
-
-  @doc """
   Determines if a list of arguments are correctly formed.
   """
   defmacro is_opts(name, ets_opts, opts) do

@@ -58,7 +58,7 @@ defmodule Eternal do
   """
   @spec start_link(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: on_start
   def start_link(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
-    Priv.exec_with { :ok, pid, _table }, create(name, [ :named_table ] ++ ets_opts, opts) do
+    with { :ok, pid, _table } <- create(name, [ :named_table ] ++ ets_opts, opts) do
       { :ok, pid }
     end
   end
@@ -96,7 +96,7 @@ defmodule Eternal do
   @spec new(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: Table.t
   def new(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
     Deppie.warn("Eternal.new/3 is deprecated! Please use Eternal.start_link/3 instead.")
-    Priv.exec_with { :ok, pid, table }, create(name, ets_opts, opts) do
+    with { :ok, pid, table } <- create(name, ets_opts, opts) do
       :erlang.unlink(pid) && table
     end
   end
@@ -172,7 +172,7 @@ defmodule Eternal do
   # as owner/heir of the ETS table immediately afterwards. We do this by fetching
   # the children of the supervisor and using the process id to nominate.
   defp create(name, ets_opts, opts) do
-    Priv.exec_with { :ok, pid, table } = res, Sup.start_link(name, ets_opts, opts) do
+    with { :ok, pid, table } = res <- Sup.start_link(name, ets_opts, opts) do
       [ proc1, proc2 ] = Supervisor.which_children(pid)
 
       { _id1, pid1, :worker, [__MODULE__.Server] } = proc1

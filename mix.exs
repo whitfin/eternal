@@ -24,7 +24,7 @@ defmodule Eternal.Mixfile do
         maintainers: [ "Isaac Whitfield" ]
       },
       version: "1.1.0",
-      elixir: "~> 1.1",
+      elixir: "~> 1.2",
       deps: deps,
       docs: [
         extras: [ "README.md" ],
