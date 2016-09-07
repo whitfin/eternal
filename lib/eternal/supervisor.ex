@@ -27,14 +27,16 @@ defmodule Eternal.Supervisor do
         { :ok, pid, Table.t } | :ignore |
         { :error, { :already_started, pid } | { :shutdown, term } | term }
   def start_link(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
-    super_tab  = :ets.new(name, [ :public ] ++ ets_opts)
-    super_args = { super_tab, opts, self() }
-    super_opts = [ name: Table.to_name(super_tab, true) ]
-    super_proc = Supervisor.start_link(__MODULE__, super_args, super_opts)
+    detect_clash(name, ets_opts, fn ->
+      super_tab  = :ets.new(name, [ :public ] ++ ets_opts)
+      super_args = { super_tab, opts, self() }
+      super_opts = [ name: Table.to_name(super_tab, true) ]
+      super_proc = Supervisor.start_link(__MODULE__, super_args, super_opts)
 
-    with { :ok, pid } <- super_proc do
-      { :ok, pid, super_tab }
-    end
+      with { :ok, pid } <- super_proc do
+        { :ok, pid, super_tab }
+      end
+    end)
   end
 
   @doc false
@@ -56,6 +58,27 @@ defmodule Eternal.Supervisor do
     ]
 
     supervise(children, strategy: :one_for_one)
+  end
+
+  # Detects a potential name clash inside ETS. If we have a named table and the
+  # table is already in use, we return a link to the existing Supervisor. This
+  # means we can be transparent to any crashes caused by starting the same ETS
+  # table twice. Otherwise, we execute the callback which will create the table.
+  defp detect_clash(name, ets_opts, fun) do
+    if exists?(name, ets_opts) do
+      { :ok, Process.whereis(name), name }
+    else
+      fun.()
+    end
+  end
+
+  # Shorthand function to determine if an ETS table exists or not. We calculate
+  # this by looking for the name inside the list of ETS tables, but only if the
+  # options specify that we should name the ETS table. If it's not named, there
+  # won't be a table clash when starting a new table, so we're safe to continue.
+  defp exists?(name, ets_opts) do
+    Enum.member?(ets_opts, :named_table) and
+    Enum.member?(:ets.all(), name)
   end
 
 end

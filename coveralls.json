@@ -10,7 +10,9 @@
     "def.+(.+\\\\.+).+do",
     "^\\s+use\\s+"
   ],
-  "custom_stop_words": [ ],
+  "custom_stop_words": [
+    "with"
+  ],
   "coverage_options": {
     "treat_no_relevant_lines_as_covered": true
   },

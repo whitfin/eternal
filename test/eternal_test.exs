@@ -71,6 +71,13 @@ defmodule EternalTest do
     assert(Regex.match?(~r/\[debug\] \[eternal\] Table 'logging_output' gifted to #PID<\d\.\d+\.\d> via #PID<\d\.\d+\.\d>/, msg))
   end
 
+  test "starting a table twice finds the previous owner" do
+    { :ok, pid1 } = Eternal.start_link(:existing_table, [], [ quiet: true ])
+    { :ok, pid2 } = Eternal.start_link(:existing_table, [], [ quiet: true ])
+
+    assert(pid1 == pid2)
+  end
+
   test "deprecation warnings when using new/3" do
     msg = capture_log(fn ->
       tab = Eternal.new(:deprecation_new, [], [ quiet: true ])
