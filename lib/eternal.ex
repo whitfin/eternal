@@ -41,6 +41,8 @@ defmodule Eternal do
 
   You may provide a third parameter containing Eternal options:
 
+  - `:name` - override the default naming scheme and use a custom name for this
+    table. Remember to use this name when calling `stop/1`.
   - `:quiet` - by default, Eternal logs debug messages. Setting this to true will
     disable this logging.
 

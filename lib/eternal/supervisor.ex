@@ -30,7 +30,7 @@ defmodule Eternal.Supervisor do
     detect_clash(name, ets_opts, fn ->
       super_tab  = :ets.new(name, [ :public ] ++ ets_opts)
       super_args = { super_tab, opts, self() }
-      super_opts = [ name: Table.to_name(super_tab, true) ]
+      super_opts = [ name: gen_name(opts, super_tab) ]
       super_proc = Supervisor.start_link(__MODULE__, super_args, super_opts)
 
       with { :ok, pid } <- super_proc do
@@ -79,6 +79,14 @@ defmodule Eternal.Supervisor do
   defp exists?(name, ets_opts) do
     Enum.member?(ets_opts, :named_table) and
     Enum.member?(:ets.all(), name)
+  end
+
+  # Generates the name to use for the Supervisor. If the name is provided, we use
+  # that, otherwise we generates a default table name from the table identifier.
+  defp gen_name(opts, super_tab) do
+    Keyword.get_lazy(opts, :name, fn ->
+      Table.to_name(super_tab, true)
+    end)
   end
 
 end
