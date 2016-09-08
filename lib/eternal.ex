@@ -48,13 +48,13 @@ defmodule Eternal do
 
   ## Examples
 
-      iex> Eternal.new(:table1)
+      iex> Eternal.start_link(:table1)
       { :ok, _pid1 }
 
-      iex> Eternal.new(:table2, [ :compressed ])
+      iex> Eternal.start_link(:table2, [ :compressed ])
       { :ok, _pid2 }
 
-      iex> Eternal.new(:table3, [ ], [ quiet: true ])
+      iex> Eternal.start_link(:table3, [ ], [ quiet: true ])
       { :ok, _pid3 }
 
   """
@@ -62,6 +62,29 @@ defmodule Eternal do
   def start_link(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
     with { :ok, pid, _table } <- create(name, [ :named_table ] ++ ets_opts, opts) do
       { :ok, pid }
+    end
+  end
+
+  @doc """
+  Functionally equivalent to `start_link/3`, except that the link to the starting
+  process is removed after the table is started.
+
+  ## Examples
+
+      iex> Eternal.start(:table1)
+      { :ok, _pid1 }
+
+      iex> Eternal.start(:table2, [ :compressed ])
+      { :ok, _pid2 }
+
+      iex> Eternal.start(:table3, [ ], [ quiet: true ])
+      { :ok, _pid3 }
+
+  """
+  @spec start(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: on_start
+  def start(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
+    with { :ok, pid } = v <- start_link(name, ets_opts, opts) do
+      :erlang.unlink(pid) && v
     end
   end
 

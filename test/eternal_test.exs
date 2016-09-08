@@ -12,6 +12,16 @@ defmodule EternalTest do
     assert(:ets.info(:table_with_options, :compressed) == true)
   end
 
+  test "starting a table with no link" do
+    spawn(fn ->
+      Eternal.start(:unlinked, [], [ quiet: true ])
+    end)
+
+    :timer.sleep(25)
+
+    assert(:unlinked in :ets.all())
+  end
+
   test "recovering from a stopd owner" do
     tab = create(:recover_stopd_owner)
 
