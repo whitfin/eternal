@@ -33,7 +33,7 @@ defmodule Eternal.Server do
     owner = Eternal.owner(table)
 
     unless owner in [ :undefined, base ] do
-      send(owner, { :"ETS-HEIR-UP", table, self })
+      send(owner, { :"ETS-HEIR-UP", table, self() })
     end
 
     { :ok, { table, opts } }
@@ -45,7 +45,7 @@ defmodule Eternal.Server do
   heir and triggering a monitor to occur against this server (the new owner).
   """
   def handle_info({ :"ETS-TRANSFER", table, from, reason }, { table, opts } = state) do
-    Priv.log("Table '#{table}' #{reason}ed to #{Priv.spid(self)} via #{Priv.spid(from)}", opts)
+    Priv.log("Table '#{table}' #{reason}ed to #{Priv.spid(self())} via #{Priv.spid(from)}", opts)
     { :noreply, state }
   end
 

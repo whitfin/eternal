@@ -25,7 +25,7 @@ defmodule Eternal.Mixfile do
       },
       version: "1.1.3",
       elixir: "~> 1.2",
-      deps: deps,
+      deps: deps(),
       docs: [
         extras: [ "README.md" ],
         source_ref: "master",
