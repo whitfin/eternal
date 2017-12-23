@@ -23,7 +23,7 @@ defmodule Eternal.Mixfile do
         },
         maintainers: [ "Isaac Whitfield" ]
       },
-      version: "1.1.3",
+      version: "1.1.4",
       elixir: "~> 1.2",
       deps: deps(),
       docs: [
@@ -56,7 +56,7 @@ defmodule Eternal.Mixfile do
   defp deps do
     [
       # Production Dependencies
-      { :deppie, "~> 1.0" },
+      { :deppie, "~> 1.1" },
       # Development Dependencies
       { :earmark,     "~> 1.0",  optional: true, only: [ :dev, :test ] },
       { :ex_doc,      "~> 0.13", optional: true, only: [ :dev, :test ] },
