@@ -61,7 +61,7 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      # Testing ependencies
+      # Local dependencies
       { :excoveralls, "~> 0.5", optional: true, only: [ :dev, :test ] },
       # Documentation dependencies
       { :ex_doc, "~> 0.16", optional: true, only: [ :docs ] }
