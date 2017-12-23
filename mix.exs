@@ -33,6 +33,12 @@ defmodule Eternal.Mixfile do
       ],
       test_coverage: [
         tool: ExCoveralls
+      ],
+      preferred_cli_env: [
+        "docs": :docs,
+        "coveralls": :test,
+        "coveralls.html": :test,
+        "coveralls.travis": :test
       ]
     ]
   end
@@ -55,10 +61,10 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      # Development Dependencies
-      { :earmark,     "~> 1.0",  optional: true, only: [ :dev, :test ] },
-      { :ex_doc,      "~> 0.13", optional: true, only: [ :dev, :test ] },
-      { :excoveralls, "~> 0.5",  optional: true, only: [ :dev, :test ] }
+      # Testing ependencies
+      { :excoveralls, "~> 0.5", optional: true, only: [ :dev, :test ] },
+      # Documentation dependencies
+      { :ex_doc, "~> 0.16", optional: true, only: [ :docs ] }
     ]
   end
 end
