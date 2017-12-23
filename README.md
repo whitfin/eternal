@@ -11,7 +11,7 @@ Eternal is available on [Hex](https://hex.pm/). You can install the package via:
 
     ```elixir
     def deps do
-      [{:eternal, "~> 1.1"}]
+      [{:eternal, "~> 1.2"}]
     end
     ```
 
