@@ -17,7 +17,7 @@ matrix:
     otp_release: 20.1
 branches:
   only:
-- master
+  - master
 before_install:
   - mix local.hex --force
   - mix local.rebar --force
