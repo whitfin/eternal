@@ -29,7 +29,8 @@ defmodule Eternal.TableTest do
     refute(detect("test") == true)
   end
 
-  defp detect(tab) when is_table(tab), do: true
-  defp detect(_tab), do: false
-
+  defp detect(tab) when is_table(tab),
+    do: true
+  defp detect(_tab),
+    do: false
 end

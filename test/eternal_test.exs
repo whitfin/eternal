@@ -87,29 +87,8 @@ defmodule EternalTest do
     assert(result2 == { :error, { :already_started, pid } })
   end
 
-  test "deprecation warnings when using new/3" do
-    msg = capture_log(fn ->
-      tab = Eternal.new(:deprecation_new, [], [ quiet: true ])
-      Eternal.stop(tab)
-      assert(is_number(tab))
-    end)
-
-    assert(Regex.match?(~r/\[warn\]  Deprecation Notice: Eternal\.new\/3 is deprecated! Please use Eternal\.start_link\/3 instead\./, msg))
-  end
-
-  test "deprecation warnings when using terminate/1" do
-    msg = capture_log(fn ->
-      :deprecation_terminate
-      |> create([], [ quiet: true ])
-      |> Eternal.terminate
-    end)
-
-    assert(Regex.match?(~r/\[warn\]  Deprecation Notice: Eternal\.terminate\/1 is deprecated! Please use Eternal\.stop\/1 instead\./, msg))
-  end
-
   defp create(name, tab_opts \\ [], opts \\ []) do
     { :ok, _pid } = Eternal.start_link(name, tab_opts, opts ++ [ quiet: true ])
     name
   end
-
 end

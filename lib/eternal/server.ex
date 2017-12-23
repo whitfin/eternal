@@ -17,9 +17,8 @@ defmodule Eternal.Server do
   @doc """
   Simply performs a base validation and passes through the arguments to the server.
   """
-  def start_link({ _table, _opts, _base } = args) do
-    GenServer.start_link(__MODULE__, args)
-  end
+  def start_link({ _table, _opts, _base } = args),
+    do: GenServer.start_link(__MODULE__, args)
 
   @doc """
   Initialization phase of an Eternal server.
@@ -65,8 +64,6 @@ defmodule Eternal.Server do
   an unrecognised message is sent. In theory, a crash shouldn't be an issue, but
   it's better logically to avoid doing so here.
   """
-  def handle_info(_msg, state) do
-    { :noreply, state }
-  end
-
+  def handle_info(_msg, state),
+    do: { :noreply, state }
 end

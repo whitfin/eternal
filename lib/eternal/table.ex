@@ -16,9 +16,8 @@ defmodule Eternal.Table do
   """
   @spec to_name(name :: (number | atom), create :: true | false) :: name :: atom | nil
   def to_name(name, create \\ false)
-  def to_name(name, _create) when is_atom(name) do
-    name
-  end
+  def to_name(name, _create) when is_atom(name),
+    do: name
   def to_name(name, true) when is_number(name) do
     name
     |> Kernel.to_string
@@ -42,5 +41,4 @@ defmodule Eternal.Table do
       is_integer(unquote(val))
     end
   end
-
 end

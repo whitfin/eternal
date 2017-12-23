@@ -88,44 +88,6 @@ defmodule Eternal do
     end
   end
 
-  @doc false
-  # As of v1.1, this function is deprecated and you should use `start_link/3` or
-  # `start/3`. It still exists only to support semantic versioning.
-  #
-  # Creates a new ETS table using the provided `ets_opts`.
-  #
-  # These options are passed through as-is, with the exception of prepending the
-  # `:public` option. Seeing as you can't execute inside the GenServers, your table
-  # will have to be public to be interacted with.
-  #
-  # The result of the call to `:ets.new/2` is the return value of this function.
-  #
-  # ## Options
-  #
-  # You may provide a third parameter containing Eternal options:
-  #
-  # - `:quiet` - by default, Eternal logs debug messages. Setting this to true will
-  #   disable this logging.
-  #
-  # ## Examples
-  #
-  #     iex> Eternal.new(:table1)
-  #     126995
-  #
-  #     iex> Eternal.new(:table2, [ :named_table ])
-  #     :table2
-  #
-  #     iex> Eternal.new(:table3, [ :named_table ], [ quiet: true ])
-  #     :table3
-  #
-  @spec new(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: Table.t
-  def new(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
-    Deppie.warn("Eternal.new/3 is deprecated! Please use Eternal.start_link/3 instead.")
-    with { :ok, pid, table } <- create(name, ets_opts, opts) do
-      :erlang.unlink(pid) && table
-    end
-  end
-
   @doc """
   Returns the heir of a given ETS table.
 
@@ -136,9 +98,8 @@ defmodule Eternal do
 
   """
   @spec heir(table :: Table.t) :: pid | :undefined
-  def heir(table) when is_table(table) do
-    :ets.info(table, :heir)
-  end
+  def heir(table) when is_table(table),
+    do: :ets.info(table, :heir)
 
   @doc """
   Returns the owner of a given ETS table.
@@ -150,9 +111,8 @@ defmodule Eternal do
 
   """
   @spec owner(table :: Table.t) :: pid | :undefined
-  def owner(table) when is_table(table) do
-    :ets.info(table, :owner)
-  end
+  def owner(table) when is_table(table),
+    do: :ets.info(table, :owner)
 
   @doc """
   Terminates both servers in charge of a given ETS table.
@@ -177,22 +137,6 @@ defmodule Eternal do
     :ok
   end
 
-  @doc false
-  # Terminates both servers in charge of a given ETS table.
-  #
-  # Note: this will terminate your ETS table.
-  #
-  # ## Examples
-  #
-  #     iex> Eternal.terminate(:my_table)
-  #     :ok
-  #
-  @spec terminate(table :: Table.t) :: :ok
-  def terminate(table) when is_table(table) do
-    Deppie.warn("Eternal.terminate/1 is deprecated! Please use Eternal.stop/1 instead.")
-    stop(table)
-  end
-
   # Creates a table supervisor with the provided options and nominates the children
   # as owner/heir of the ETS table immediately afterwards. We do this by fetching
   # the children of the supervisor and using the process id to nominate.
@@ -209,5 +153,4 @@ defmodule Eternal do
       res
     end
   end
-
 end

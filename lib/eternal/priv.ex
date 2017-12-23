@@ -31,7 +31,7 @@ defmodule Eternal.Priv do
   """
   @spec gift(table :: Table.t, pid :: pid) :: any | false
   def gift(table, pid) when is_table(table) and is_pid(pid),
-  do: ets_try(table, &:ets.give_away(&1, pid, :gift))
+    do: ets_try(table, &:ets.give_away(&1, pid, :gift))
 
   @doc """
   Sets the Heir of an ETS table to a given process.
@@ -40,7 +40,7 @@ defmodule Eternal.Priv do
   """
   @spec heir(table :: Table.t, pid :: pid) :: any | false
   def heir(table, pid) when is_table(table) and is_pid(pid),
-  do: ets_try(table, &:ets.setopts(&1, { :heir, pid, :heir }))
+    do: ets_try(table, &:ets.setopts(&1, { :heir, pid, :heir }))
 
   @doc """
   Logs a message inside a noisy environment.
@@ -69,7 +69,8 @@ defmodule Eternal.Priv do
   Converts a PID to a Binary using `inspect/1`.
   """
   @spec spid(pid :: pid) :: spid :: binary
-  def spid(pid), do: inspect(pid)
+  def spid(pid),
+    do: inspect(pid)
 
   @doc """
   Determines if a list of arguments are correctly formed.
@@ -81,5 +82,4 @@ defmodule Eternal.Priv do
       is_list(unquote(opts))
     end
   end
-
 end

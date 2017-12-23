@@ -88,5 +88,4 @@ defmodule Eternal.Supervisor do
       Table.to_name(super_tab, true)
     end)
   end
-
 end
