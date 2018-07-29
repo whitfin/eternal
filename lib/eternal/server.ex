@@ -38,32 +38,26 @@ defmodule Eternal.Server do
     { :ok, { table, opts } }
   end
 
-  @doc """
-  Handles the transfer of an ETS table from an owner to an heir, with the server
-  receiving this message being the heir. We log the change before starting a new
-  heir and triggering a monitor to occur against this server (the new owner).
-  """
+  # Handles the transfer of an ETS table from an owner to an heir, with the server
+  # receiving this message being the heir. We log the change before starting a new
+  # heir and triggering a monitor to occur against this server (the new owner).
   def handle_info({ :"ETS-TRANSFER", table, from, reason }, { table, opts } = state) do
     Priv.log("Table '#{table}' #{reason}ed to #{Priv.spid(self())} via #{Priv.spid(from)}", opts)
     { :noreply, state }
   end
 
-  @doc """
-  Handles the termination of an heir, through the usual GenServer stop functions.
-  In this scenario the heir will attempt to message through to the owner in order
-  to inform it to create a new heir, which it will then carry out.
-  """
+  # Handles the termination of an heir, through the usual GenServer stop functions.
+  # In this scenario the heir will attempt to message through to the owner in order
+  # to inform it to create a new heir, which it will then carry out.
   def handle_info({ :"ETS-HEIR-UP", table, pid }, { table, opts } = state) do
     Priv.heir(table, pid)
     Priv.log("Assigned new heir #{Priv.spid(pid)}", opts)
     { :noreply, state }
   end
 
-  @doc """
-  Catch all info handler to ensure that we don't crash for whatever reason when
-  an unrecognised message is sent. In theory, a crash shouldn't be an issue, but
-  it's better logically to avoid doing so here.
-  """
+  # Catch all info handler to ensure that we don't crash for whatever reason when
+  # an unrecognised message is sent. In theory, a crash shouldn't be an issue, but
+  # it's better logically to avoid doing so here.
   def handle_info(_msg, state),
     do: { :noreply, state }
 end

@@ -35,8 +35,8 @@ defmodule Eternal.Mixfile do
         tool: ExCoveralls
       ],
       preferred_cli_env: [
-        "docs": :docs,
-        "coveralls": :test,
+        docs: :docs,
+        coveralls: :test,
         "coveralls.html": :test,
         "coveralls.travis": :test
       ]
