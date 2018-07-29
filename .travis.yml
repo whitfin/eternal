@@ -28,6 +28,7 @@ matrix:
   - elixir: 1.2
     otp_release: 21.0
   - elixir: 1.2
+    otp_release: 21.0
 branches:
   only:
   - master
