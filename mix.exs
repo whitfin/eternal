@@ -36,9 +36,9 @@ defmodule Eternal.Mixfile do
       ],
       preferred_cli_env: [
         docs: :docs,
-        coveralls: :test,
-        "coveralls.html": :test,
-        "coveralls.travis": :test
+        coveralls: :cover,
+        "coveralls.html": :cover,
+        "coveralls.travis": :cover
       ]
     ]
   end
@@ -61,10 +61,8 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      # Local dependencies
-      { :excoveralls, "~> 0.5", optional: true, only: [ :dev, :test ] },
-      # Documentation dependencies
-      { :ex_doc, "~> 0.16", optional: true, only: [ :docs ] }
+      { :ex_doc, "~> 0.16", optional: true, only: [ :docs ] },
+      { :excoveralls, "~> 0.5", optional: true, only: [ :cover ] }
     ]
   end
 end
