@@ -31,7 +31,7 @@ matrix:
     - elixir: 1.9
       otp_release: 22.0
       script:
-        - mix coveralls.travis --trace
+        - MIX_ENV=cover mix coveralls.travis --trace
 
   # Incompatible pairs.
   exclude:
