@@ -12,6 +12,30 @@ defmodule EternalTest do
     assert(:ets.info(:table_with_options, :compressed) == true)
   end
 
+  def callback_fun(_pid, table) do
+    require Logger
+
+    Logger.debug to_string(table)
+  end
+
+  test "starting with an MFA callback" do
+    msg = capture_log(fn ->
+      Eternal.start_link Eternal, [], callback: {__MODULE__, :callback_fun, []}, quiet: true
+    end)
+
+    assert msg =~ "Eternal"
+  end
+
+  test "starting with a function capture callback" do
+    require Logger
+
+    msg = capture_log(fn ->
+      Eternal.start_link Eternal, [], callback: fn pid, table -> callback_fun(pid, table) end, quiet: true
+    end)
+
+    assert msg =~ "Eternal"
+  end
+
   test "starting a table with no link" do
     spawn(fn ->
       Eternal.start(:unlinked, [], [ quiet: true ])

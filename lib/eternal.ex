@@ -150,7 +150,24 @@ defmodule Eternal do
       Priv.heir(table, pid2)
       Priv.gift(table, pid1)
 
+      maybe_process_callback(opts[:callback], pid, table)
       res
     end
+  end
+
+  # Callback function when the :ets table
+  # is created and the supervisor process
+  # is up and running.
+  defp maybe_process_callback(nil, _pid, _table) do
+    nil
+  end
+
+  defp maybe_process_callback(fun, pid, table) when is_function(fun, 2) do
+    fun.(pid, table)
+  end
+
+  defp maybe_process_callback({module, function, args}, pid, table)
+      when is_mfa(module, function, args) do
+    :erlang.apply(module, function, [pid, table | args])
   end
 end

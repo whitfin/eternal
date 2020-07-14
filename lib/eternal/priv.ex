@@ -82,4 +82,15 @@ defmodule Eternal.Priv do
       is_list(unquote(opts))
     end
   end
+
+  @doc """
+  Determines if a 3-tuple is a {module, function, args}
+  """
+  defmacro is_mfa(module, function, args) do
+    quote do
+     is_atom(unquote(module)) and
+     is_atom(unquote(function)) and
+     is_list(unquote(args))
+    end
+  end
 end

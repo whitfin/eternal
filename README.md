@@ -11,7 +11,7 @@ Eternal is available on [Hex](https://hex.pm/). You can install the package via:
 
     ```elixir
     def deps do
-      [{:eternal, "~> 1.2"}]
+      [{:eternal, "~> 1.3"}]
     end
     ```
 
@@ -101,6 +101,17 @@ defmodule MyApplication.OneForAllSupervisor do
     supervise(children, strategy: :one_for_all)
   end
 end
+```
+
+## Application callback
+
+If your application would like to be informed when the supervisor is operation and the :ets table is created you may pass the option `:callback` to the `Eternal.start_link/3` and `Eternal.start/3` functions. The callback is a function specification of the form either `{Module, function, [args]}` or a function capture. For example:
+```elixir
+# The parameters pid and table are passed to the callback
+iex> Eternal.start_link MyTable, [], callback: fn pid, table -> callback_fun(pid, table) end
+
+# The parameters pid and table are pre-prended to args
+iex> Eternal.start_link Eternal, [], callback: {MyModule, :callback_fun, []}, quiet: true
 ```
 
 ## Contributions

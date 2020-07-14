@@ -57,7 +57,7 @@ defmodule Eternal.Supervisor do
       worker(Eternal.Server, [{ table, flags, base }], id: Server.Two)
     ]
 
-    supervise(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
   # Detects a potential name clash inside ETS. If we have a named table and the
