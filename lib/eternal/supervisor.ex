@@ -52,12 +52,33 @@ defmodule Eternal.Supervisor do
       App.ensure_all_started(:logger)
     end)
 
-    children = [
-      worker(Eternal.Server, [{ table, flags, base }], id: Server.One),
-      worker(Eternal.Server, [{ table, flags, base }], id: Server.Two)
+    [{ table, flags, base }]
+    |> init_children
+    |> init_supervisor
+  end
+
+  # Conditionally compile child specifications based on Elixir version.
+  if Version.match?(System.version(), ">= 1.5.0") do
+
+    # Creates a child spec using the >= v1.5 Elixir formatting and options.
+    defp init_children(arguments), do: [
+      %{ id: Server.One, start: { Eternal.Server, :start_link, arguments }},
+      %{ id: Server.Two, start: { Eternal.Server, :start_link, arguments }}
     ]
 
-    supervise(children, strategy: :one_for_one)
+    # Initializes a Supervisor using the >= v1.5 Elixir options.
+    defp init_supervisor(children),
+      do: Supervisor.init(children, strategy: :one_for_one)
+  else
+    # Creates a child spec using the < v1.5 Elixir formatting and options.
+    defp init_children(arguments), do: [
+      worker(Eternal.Server, arguments, id: Server.One),
+      worker(Eternal.Server, arguments, id: Server.Two)
+    ]
+
+    # Initializes a Supervisor using the < v1.5 Elixir options.
+    defp init_supervisor(children),
+      do: Supervisor.start_link(children, strategy: :one_for_one)
   end
 
   # Detects a potential name clash inside ETS. If we have a named table and the
