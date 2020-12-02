@@ -78,7 +78,7 @@ defmodule Eternal.Supervisor do
 
     # Initializes a Supervisor using the < v1.5 Elixir options.
     defp init_supervisor(children),
-      do: Supervisor.start_link(children, strategy: :one_for_one)
+      do: supervise(children, strategy: :one_for_one)
   end
 
   # Detects a potential name clash inside ETS. If we have a named table and the
