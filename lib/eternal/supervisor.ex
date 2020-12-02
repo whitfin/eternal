@@ -59,7 +59,6 @@ defmodule Eternal.Supervisor do
 
   # Conditionally compile child specifications based on Elixir version.
   if Version.match?(System.version(), ">= 1.5.0") do
-
     # Creates a child spec using the >= v1.5 Elixir formatting and options.
     defp init_children(arguments), do: [
       %{ id: Server.One, start: { Eternal.Server, :start_link, arguments }},
