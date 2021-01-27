@@ -1,5 +1,5 @@
 # Eternal
-[![Build Status](https://img.shields.io/travis/whitfin/eternal.svg)](https://travis-ci.org/whitfin/eternal) [![Coverage Status](https://img.shields.io/coveralls/whitfin/eternal.svg)](https://coveralls.io/github/whitfin/eternal) [![Hex.pm Version](https://img.shields.io/hexpm/v/eternal.svg)](https://hex.pm/packages/eternal) [![Documentation](https://img.shields.io/badge/docs-latest-yellowgreen.svg)](https://hexdocs.pm/eternal/)
+[![Build Status](https://img.shields.io/github/workflow/status/whitfin/eternal/CI)](https://github.com/whitfin/eternal/actions) [![Coverage Status](https://img.shields.io/coveralls/whitfin/eternal.svg)](https://coveralls.io/github/whitfin/eternal) [![Hex.pm Version](https://img.shields.io/hexpm/v/eternal.svg)](https://hex.pm/packages/eternal) [![Documentation](https://img.shields.io/badge/docs-latest-yellowgreen.svg)](https://hexdocs.pm/eternal/)
 
 Eternal is a simple way to monitor an ETS table to ensure that it never dies. It works by using bouncing GenServers to ensure that both an owner and heir are always available, via the use of scheduled monitoring and message passing. The idea is similar to that of the Immortal library, but taking it further to ensure a more bulletproof solution - and removing the need to have a single process dedicated to owning your ETS table.
 
