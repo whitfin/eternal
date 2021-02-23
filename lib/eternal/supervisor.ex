@@ -1,9 +1,10 @@
 defmodule Eternal.Supervisor do
-  @moduledoc false
-  # This module contains the main Eternal Supervisor which is used to manage the
-  # two internal GenServers which act as owner/heir to the ETS table. There's little
-  # in here beyond setting up a Supervision tree, as we want to keep the code simple
-  # to make it pretty bulletproof as an implementation.
+  @moduledoc """
+  This module contains the main Eternal Supervisor which is used to manage the
+  two internal GenServers which act as owner/heir to the ETS table. There's little
+  in here beyond setting up a Supervision tree, as we want to keep the code simple
+  to make it pretty bulletproof as an implementation.
+  """
 
   # this is a supervisor
   use Supervisor

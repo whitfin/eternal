@@ -1,12 +1,13 @@
 defmodule Eternal.Server do
-  @moduledoc false
-  # This module remains internal to Eternal and should not be manually created
-  # by anyone external so it shall remain undocumented for now.
-  #
-  # Basically, this module implements an extremely base GenServer which listens
-  # on two messages - the first is that of ETS to trigger a log that the table
-  # owner has changed, and the other is a recognisation that a new heir has been
-  # attached and needs assigning to ETS (as only an owner can set the heir).
+  @moduledoc """
+  This module remains internal to Eternal and should not be manually created
+  by anyone external so it shall remain undocumented for now.
+
+  Basically, this module implements an extremely base GenServer which listens
+  on two messages - the first is that of ETS to trigger a log that the table
+  owner has changed, and the other is a recognition that a new heir has been
+  attached and needs assigning to ETS (as only an owner can set the heir).
+  """
 
   # use default server behaviour
   use GenServer

@@ -1,8 +1,9 @@
 defmodule Eternal.Table do
-  @moduledoc false
-  # This module contains functions related to interactions with tables. At the moment
-  # this just consists of guard expressions to determine valid tables, and the ability
-  # to convert a table identifier to a valid Supervisor name.
+  @moduledoc """
+  This module contains functions related to interactions with tables. At the moment
+  this just consists of guard expressions to determine valid tables, and the ability
+  to convert a table identifier to a valid Supervisor name.
+  """
 
   # define a table typespec
   @opaque t :: number | atom

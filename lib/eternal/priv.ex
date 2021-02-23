@@ -1,8 +1,9 @@
 defmodule Eternal.Priv do
-  @moduledoc false
-  # This module contains code private to the Eternal project, basically just
-  # providing utility functions and macros. Nothing too interesting to see here
-  # beyond shorthands for common blocks.
+  @moduledoc """
+  This module contains code private to the Eternal project, basically just
+  providing utility functions and macros. Nothing too interesting to see here
+  beyond shorthands for common blocks.
+  """
 
   # we need is_table/1
   import Eternal.Table

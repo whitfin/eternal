@@ -1,5 +1,12 @@
 # Eternal
-[![Build Status](https://img.shields.io/github/workflow/status/whitfin/eternal/CI)](https://github.com/whitfin/eternal/actions) [![Coverage Status](https://img.shields.io/coveralls/whitfin/eternal.svg)](https://coveralls.io/github/whitfin/eternal) [![Hex.pm Version](https://img.shields.io/hexpm/v/eternal.svg)](https://hex.pm/packages/eternal) [![Documentation](https://img.shields.io/badge/docs-latest-yellowgreen.svg)](https://hexdocs.pm/eternal/)
+
+[![Build Status](https://img.shields.io/github/workflow/status/whitfin/eternal/CI)](https://github.com/whitfin/eternal/actions)
+[![Coverage Status](https://img.shields.io/coveralls/whitfin/eternal.svg)](https://coveralls.io/github/whitfin/eternal)
+[![Module Version](https://img.shields.io/hexpm/v/eternal.svg)](https://hex.pm/packages/eternal)
+[![Documentation](https://img.shields.io/badge/docs-latest-yellowgreen.svg)](https://hexdocs.pm/eternal/)
+[![Total Download](https://img.shields.io/hexpm/dt/eternal.svg)](https://hex.pm/packages/eternal)
+[![License](https://img.shields.io/hexpm/l/eternal.svg)](https://github.com/whitfin/eternal/blob/master/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/whitfin/eternal.svg)](https://github.com/whitfin/eternal/commits/master)
 
 Eternal is a simple way to monitor an ETS table to ensure that it never dies. It works by using bouncing GenServers to ensure that both an owner and heir are always available, via the use of scheduled monitoring and message passing. The idea is similar to that of the Immortal library, but taking it further to ensure a more bulletproof solution - and removing the need to have a single process dedicated to owning your ETS table.
 
@@ -7,19 +14,23 @@ Eternal is a simple way to monitor an ETS table to ensure that it never dies. It
 
 Eternal is available on [Hex](https://hex.pm/). You can install the package via:
 
-1. Add eternal to your list of dependencies in `mix.exs`:
+1. Add `:eternal` to your list of dependencies in `mix.exs`:
 
     ```elixir
     def deps do
-      [{:eternal, "~> 1.2"}]
+      [
+        {:eternal, "~> 1.2"}
+      ]
     end
     ```
 
-2. Ensure eternal is started before your application:
+2. Ensure `:eternal` is started before your application for Elixir version earlier than 1.4:
 
     ```elixir
     def application do
-      [applications: [:eternal]]
+      [
+        applications: [:eternal]
+      ]
     end
     ```
 
@@ -105,7 +116,7 @@ end
 
 ## Contributions
 
-If you feel something can be improved, or have any questions about certain behaviours or pieces of implementation, please feel free to file an issue. Proposed changes should be taken to issues before any PRs to avoid wasting time on code which might not be merged upstream.
+If you feel something can be improved, or have any questions about certain behaviours or pieces of implementation, please feel free to file an issue. Proposed changes should be taken to issues before any Pull Requests (PRs) to avoid wasting time on code which might not be merged upstream.
 
 ## Credits
 
@@ -113,3 +124,10 @@ Thanks to the following for the inspiration for this project:
 
 - [Daniel Berkompas](https://github.com/danielberkompas/immortal)
 - [Steve Vinoski](http://steve.vinoski.net/blog/2011/03/23/dont-lose-your-ets-tables/)
+
+## Copyright and License
+
+Copyright (c) 2016 Isaac Whitfield
+
+This library is MIT licensed. See the
+[LICENSE](https://github.com/whitfin/eternal/blob/master/LICENSE) for details.
