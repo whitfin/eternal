@@ -61,8 +61,8 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:ex_doc, "~> 0.16", optional: true, only: [:docs]},
-      {:excoveralls, "~> 0.5", optional: true, only: [:cover]}
+      {:ex_doc, "~> 0.29", optional: true, only: [:docs]},
+      {:excoveralls, "~> 0.15", optional: true, only: [:cover]}
     ]
   end
 end
