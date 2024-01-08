@@ -31,6 +31,7 @@ defmodule Eternal.TableTest do
 
   defp detect(tab) when is_table(tab),
     do: true
+
   defp detect(_tab),
     do: false
 end

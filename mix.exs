@@ -16,18 +16,18 @@ defmodule Eternal.Mixfile do
           "LICENSE",
           "README.md"
         ],
-        licenses: [ "MIT" ],
+        licenses: ["MIT"],
         links: %{
           "Docs" => @url_docs,
           "GitHub" => @url_github
         },
-        maintainers: [ "Isaac Whitfield" ]
+        maintainers: ["Isaac Whitfield"]
       },
       version: "1.2.2",
       elixir: "~> 1.2",
       deps: deps(),
       docs: [
-        extras: [ "README.md" ],
+        extras: ["README.md"],
         source_ref: "master",
         source_url: @url_github
       ],
@@ -61,8 +61,8 @@ defmodule Eternal.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      { :ex_doc, "~> 0.16", optional: true, only: [ :docs ] },
-      { :excoveralls, "~> 0.5", optional: true, only: [ :cover ] }
+      {:ex_doc, "~> 0.16", optional: true, only: [:docs]},
+      {:excoveralls, "~> 0.5", optional: true, only: [:cover]}
     ]
   end
 end

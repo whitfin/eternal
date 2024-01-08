@@ -4,17 +4,28 @@ defmodule EternalTest do
   import ExUnit.CaptureLog
 
   test "starting a table successfully" do
-    assert(match?({ :ok, _pid }, Eternal.start_link(:table_no_options, [], [ quiet: true ])))
+    assert(
+      match?(
+        {:ok, _pid},
+        Eternal.start_link(:table_no_options, [], quiet: true)
+      )
+    )
   end
 
   test "starting a table with options" do
-    assert(match?({ :ok, _pid }, Eternal.start_link(:table_with_options, [ :compressed ], [ quiet: true ])))
+    assert(
+      match?(
+        {:ok, _pid},
+        Eternal.start_link(:table_with_options, [:compressed], quiet: true)
+      )
+    )
+
     assert(:ets.info(:table_with_options, :compressed) == true)
   end
 
   test "starting a table with no link" do
     spawn(fn ->
-      Eternal.start(:unlinked, [], [ quiet: true ])
+      Eternal.start(:unlinked, [], quiet: true)
     end)
 
     :timer.sleep(25)
@@ -72,23 +83,29 @@ defmodule EternalTest do
   end
 
   test "logging output when creating a table" do
-    msg = capture_log(fn ->
-      Eternal.start_link(:logging_output)
-      :timer.sleep(25)
-      Eternal.stop(:logging_output)
-    end)
+    msg =
+      capture_log(fn ->
+        Eternal.start_link(:logging_output)
+        :timer.sleep(25)
+        Eternal.stop(:logging_output)
+      end)
 
-    assert(Regex.match?(~r/\[debug\] \[eternal\] Table 'logging_output' gifted to #PID<\d\.\d+\.\d> via #PID<\d\.\d+\.\d>/, msg))
+    assert(
+      Regex.match?(
+        ~r/\[debug\] \[eternal\] Table 'logging_output' gifted to #PID<\d\.\d+\.\d> via #PID<\d\.\d+\.\d>/,
+        msg
+      )
+    )
   end
 
   test "starting a table twice finds the previous owner" do
-    { :ok, pid } = Eternal.start_link(:existing_table, [], [ quiet: true ])
-    result2 = Eternal.start_link(:existing_table, [], [ quiet: true ])
-    assert(result2 == { :error, { :already_started, pid } })
+    {:ok, pid} = Eternal.start_link(:existing_table, [], quiet: true)
+    result2 = Eternal.start_link(:existing_table, [], quiet: true)
+    assert(result2 == {:error, {:already_started, pid}})
   end
 
   defp create(name, tab_opts \\ [], opts \\ []) do
-    { :ok, _pid } = Eternal.start_link(name, tab_opts, opts ++ [ quiet: true ])
+    {:ok, _pid} = Eternal.start_link(name, tab_opts, opts ++ [quiet: true])
     name
   end
 end

@@ -27,8 +27,10 @@ defmodule Eternal do
   alias Eternal.Supervisor, as: Sup
 
   # Return values of `start_link` functions
-  @type on_start :: { :ok, pid } | :ignore |
-                    { :error, { :already_started, pid } | { :shutdown, term } | term }
+  @type on_start ::
+          {:ok, pid}
+          | :ignore
+          | {:error, {:already_started, pid} | {:shutdown, term} | term}
 
   @doc """
   Creates a new ETS table using the provided `ets_opts`.
@@ -58,10 +60,12 @@ defmodule Eternal do
       { :ok, _pid3 }
 
   """
-  @spec start_link(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: on_start
-  def start_link(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
-    with { :ok, pid, _table } <- create(name, [ :named_table ] ++ ets_opts, opts) do
-      { :ok, pid }
+  @spec start_link(name :: atom, ets_opts :: Keyword.t(), opts :: Keyword.t()) ::
+          on_start
+  def start_link(name, ets_opts \\ [], opts \\ [])
+      when is_opts(name, ets_opts, opts) do
+    with {:ok, pid, _table} <- create(name, [:named_table] ++ ets_opts, opts) do
+      {:ok, pid}
     end
   end
 
@@ -81,9 +85,11 @@ defmodule Eternal do
       { :ok, _pid3 }
 
   """
-  @spec start(name :: atom, ets_opts :: Keyword.t, opts :: Keyword.t) :: on_start
-  def start(name, ets_opts \\ [], opts \\ []) when is_opts(name, ets_opts, opts) do
-    with { :ok, pid } = v <- start_link(name, ets_opts, opts) do
+  @spec start(name :: atom, ets_opts :: Keyword.t(), opts :: Keyword.t()) ::
+          on_start
+  def start(name, ets_opts \\ [], opts \\ [])
+      when is_opts(name, ets_opts, opts) do
+    with {:ok, pid} = v <- start_link(name, ets_opts, opts) do
       :erlang.unlink(pid) && v
     end
   end
@@ -97,7 +103,7 @@ defmodule Eternal do
       #PID<0.134.0>
 
   """
-  @spec heir(table :: Table.t) :: pid | :undefined
+  @spec heir(table :: Table.t()) :: pid | :undefined
   def heir(table) when is_table(table),
     do: :ets.info(table, :heir)
 
@@ -110,7 +116,7 @@ defmodule Eternal do
       #PID<0.132.0>
 
   """
-  @spec owner(table :: Table.t) :: pid | :undefined
+  @spec owner(table :: Table.t()) :: pid | :undefined
   def owner(table) when is_table(table),
     do: :ets.info(table, :owner)
 
@@ -125,7 +131,7 @@ defmodule Eternal do
       :ok
 
   """
-  @spec stop(table :: Table.t) :: :ok
+  @spec stop(table :: Table.t()) :: :ok
   def stop(table) when is_table(table) do
     name = Table.to_name(table)
     proc = GenServer.whereis(name)
@@ -141,11 +147,11 @@ defmodule Eternal do
   # as owner/heir of the ETS table immediately afterwards. We do this by fetching
   # the children of the supervisor and using the process id to nominate.
   defp create(name, ets_opts, opts) do
-    with { :ok, pid, table } = res <- Sup.start_link(name, ets_opts, opts) do
-      [ proc1, proc2 ] = Supervisor.which_children(pid)
+    with {:ok, pid, table} = res <- Sup.start_link(name, ets_opts, opts) do
+      [proc1, proc2] = Supervisor.which_children(pid)
 
-      { _id1, pid1, :worker, [__MODULE__.Server] } = proc1
-      { _id2, pid2, :worker, [__MODULE__.Server] } = proc2
+      {_id1, pid1, :worker, [__MODULE__.Server]} = proc1
+      {_id2, pid2, :worker, [__MODULE__.Server]} = proc2
 
       Priv.heir(table, pid2)
       Priv.gift(table, pid1)

@@ -17,7 +17,7 @@ defmodule Eternal.Priv do
   noted that the table is passed through purely as sugar so we can use inline
   anonymous functions.
   """
-  @spec ets_try(table :: Table.t, fun :: function) :: any | false
+  @spec ets_try(table :: Table.t(), fun :: function) :: any | false
   def ets_try(table, fun) when is_table(table) and is_function(fun, 1) do
     fun.(table)
   rescue
@@ -29,7 +29,7 @@ defmodule Eternal.Priv do
 
   This must be called from within the owning process.
   """
-  @spec gift(table :: Table.t, pid :: pid) :: any | false
+  @spec gift(table :: Table.t(), pid :: pid) :: any | false
   def gift(table, pid) when is_table(table) and is_pid(pid),
     do: ets_try(table, &:ets.give_away(&1, pid, :gift))
 
@@ -38,16 +38,16 @@ defmodule Eternal.Priv do
 
   This must be called from within the owning process.
   """
-  @spec heir(table :: Table.t, pid :: pid) :: any | false
+  @spec heir(table :: Table.t(), pid :: pid) :: any | false
   def heir(table, pid) when is_table(table) and is_pid(pid),
-    do: ets_try(table, &:ets.setopts(&1, { :heir, pid, :heir }))
+    do: ets_try(table, &:ets.setopts(&1, {:heir, pid, :heir}))
 
   @doc """
   Logs a message inside a noisy environment.
 
   If the options contains a truthy quiet flag, no logging occurs.
   """
-  @spec log(msg :: any, opts :: Keyword.t) :: :ok
+  @spec log(msg :: any, opts :: Keyword.t()) :: :ok
   def log(msg, opts) when is_list(opts) do
     noisy(opts, fn ->
       Logger.debug("[eternal] #{msg}")
@@ -59,7 +59,7 @@ defmodule Eternal.Priv do
 
   Noisy environments are determined by the opts having a falsy quiet flag.
   """
-  @spec noisy(opts :: Keyword.t, fun :: function) :: :ok
+  @spec noisy(opts :: Keyword.t(), fun :: function) :: :ok
   def noisy(opts, fun) when is_list(opts) and is_function(fun, 0) do
     !Keyword.get(opts, :quiet) && fun.()
     :ok
@@ -78,8 +78,8 @@ defmodule Eternal.Priv do
   defmacro is_opts(name, ets_opts, opts) do
     quote do
       is_atom(unquote(name)) and
-      is_list(unquote(ets_opts)) and
-      is_list(unquote(opts))
+        is_list(unquote(ets_opts)) and
+        is_list(unquote(opts))
     end
   end
 end

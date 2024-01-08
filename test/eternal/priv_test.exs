@@ -23,6 +23,7 @@ defmodule Eternal.PrivTest do
 
   defp detect(a, b, c) when is_opts(a, b, c),
     do: true
+
   defp detect(_a, _b, _c),
     do: false
 end
