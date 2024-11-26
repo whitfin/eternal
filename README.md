@@ -5,31 +5,23 @@ Eternal is a simple way to monitor an ETS table to ensure that it never dies. It
 
 ## Installation
 
-Eternal is available on [Hex](https://hex.pm/). You can install the package via:
+Eternal is available on [Hex](https://hex.pm/). You can install the package by adding `eternal` to your list of dependencies in `mix.exs`:
 
-1. Add eternal to your list of dependencies in `mix.exs`:
+```elixir
+def deps do
+  [{:eternal, "~> 1.2"}]
+end
+```
 
-    ```elixir
-    def deps do
-      [{:eternal, "~> 1.2"}]
-    end
-    ```
-
-2. Ensure eternal is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:eternal]]
-    end
-    ```
+Then running `mix deps.get` will pull the package from the registry.
 
 ## Usage
 
 ### Manual Startup
 
-The API of Eternal is quite small in order to reduce the risk of potential crashes (as that would cause you to lose your ETS tables). You'll probably just want to use `start_link/3` which behaves quite similarly to `:ets.new/2`. The first two arguments are identical to `:ets.new/2`, and the latter is just a Keyword List of options to configure Eternal.
+The API of Eternal is quite small in order to reduce the risk of potential crashes (as that would cause you to lose your ETS tables). You'll probably just want to use `Eternal.start_link/3` which behaves quite similarly to `:ets.new/2`.
 
-It should be noted that the table will always have the `:public` (for table access) and `:named_table` (for table naming) arguments passed in, whether specified or not. Both the second and third arguments are optional.
+The first two arguments are identical to `:ets.new/2`, and the latter is just a Keyword List of options to configure Eternal. It should be noted that the table will always have the `:public` (for table access) and `:named_table` (for table naming) arguments passed in, whether specified or not. Both the second and third arguments are optional.
 
 ```elixir
 iex> Eternal.start_link(:table1, [ :set, { :read_concurrency, true }])
@@ -46,22 +38,20 @@ I'd highly recommend setting up an Application and letting Eternal start up insi
 
 ```elixir
 defmodule MyApplication do
-  # define application
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
+  @impl true
   def start(_type, _args) do
-    import Supervisor.Spec, warn: false
-
-    # Define workers and child supervisors to be supervised
     children = [
-      supervisor(Eternal, [:table, [ :compressed ], [ quiet: true ]])
+      %{
+        id: Eternal,
+        start: {Eternal, :start_link, [:table, [:compressed], [quiet: true]]}
+      }
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
+    # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [ strategy: :one_for_one ]
+    opts = [strategy: :one_for_one]
     Supervisor.start_link(children, opts)
   end
 end
