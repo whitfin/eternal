@@ -4,9 +4,6 @@ defmodule Eternal.Priv do
   # providing utility functions and macros. Nothing too interesting to see here
   # beyond shorthands for common blocks.
 
-  # we need is_table/1
-  import Eternal.Table
-
   # we also need logging
   require Logger
 
@@ -17,8 +14,8 @@ defmodule Eternal.Priv do
   noted that the table is passed through purely as sugar so we can use inline
   anonymous functions.
   """
-  @spec ets_try(table :: Table.t(), fun :: function) :: any | false
-  def ets_try(table, fun) when is_table(table) and is_function(fun, 1) do
+  @spec ets_try(table :: atom, fun :: (atom -> any)) :: any | false
+  def ets_try(table, fun) when is_atom(table) and is_function(fun, 1) do
     fun.(table)
   rescue
     _ -> false
@@ -29,8 +26,8 @@ defmodule Eternal.Priv do
 
   This must be called from within the owning process.
   """
-  @spec gift(table :: Table.t(), pid :: pid) :: any | false
-  def gift(table, pid) when is_table(table) and is_pid(pid),
+  @spec gift(table :: atom, pid :: pid) :: boolean
+  def gift(table, pid) when is_atom(table) and is_pid(pid),
     do: ets_try(table, &:ets.give_away(&1, pid, :gift))
 
   @doc """
@@ -38,8 +35,8 @@ defmodule Eternal.Priv do
 
   This must be called from within the owning process.
   """
-  @spec heir(table :: Table.t(), pid :: pid) :: any | false
-  def heir(table, pid) when is_table(table) and is_pid(pid),
+  @spec heir(table :: atom, pid :: pid) :: boolean
+  def heir(table, pid) when is_atom(table) and is_pid(pid),
     do: ets_try(table, &:ets.setopts(&1, {:heir, pid, :heir}))
 
   @doc """
@@ -59,7 +56,7 @@ defmodule Eternal.Priv do
 
   Noisy environments are determined by the opts having a falsy quiet flag.
   """
-  @spec noisy(opts :: Keyword.t(), fun :: function) :: :ok
+  @spec noisy(opts :: Keyword.t(), fun :: (-> any)) :: :ok
   def noisy(opts, fun) when is_list(opts) and is_function(fun, 0) do
     !Keyword.get(opts, :quiet) && fun.()
     :ok

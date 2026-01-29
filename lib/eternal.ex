@@ -18,12 +18,10 @@ defmodule Eternal do
   """
 
   # import guards
-  import Eternal.Table
   import Eternal.Priv
 
   # alias while we're at it
   alias Eternal.Priv
-  alias Eternal.Table
   alias Eternal.Supervisor, as: Sup
 
   # Return values of `start_link` functions
@@ -36,8 +34,9 @@ defmodule Eternal do
   Creates a new ETS table using the provided `ets_opts`.
 
   These options are passed through as-is, with the exception of prepending the
-  `:public` and `:named_table` options. Seeing as you can't execute inside the
-  GenServers, your table will have to be public to be interacted with.
+  `:public` and `:named_table` options (see `Eternal.Supervisor`). Seeing as
+  you can't execute inside the GenServers, your table will have to be public
+  to be interacted with.
 
   ## Options
 
@@ -64,7 +63,7 @@ defmodule Eternal do
           on_start
   def start_link(name, ets_opts \\ [], opts \\ [])
       when is_opts(name, ets_opts, opts) do
-    with {:ok, pid, _table} <- create(name, [:named_table] ++ ets_opts, opts) do
+    with {:ok, pid, _table} <- create(name, ets_opts, opts) do
       {:ok, pid}
     end
   end
@@ -90,7 +89,8 @@ defmodule Eternal do
   def start(name, ets_opts \\ [], opts \\ [])
       when is_opts(name, ets_opts, opts) do
     with {:ok, pid} = v <- start_link(name, ets_opts, opts) do
-      :erlang.unlink(pid) && v
+      :erlang.unlink(pid)
+      v
     end
   end
 
@@ -103,8 +103,8 @@ defmodule Eternal do
       #PID<0.134.0>
 
   """
-  @spec heir(table :: Table.t()) :: pid | :undefined
-  def heir(table) when is_table(table),
+  @spec heir(table :: atom) :: pid | :undefined
+  def heir(table) when is_atom(table),
     do: :ets.info(table, :heir)
 
   @doc """
@@ -116,8 +116,8 @@ defmodule Eternal do
       #PID<0.132.0>
 
   """
-  @spec owner(table :: Table.t()) :: pid | :undefined
-  def owner(table) when is_table(table),
+  @spec owner(table :: atom) :: pid | :undefined
+  def owner(table) when is_atom(table),
     do: :ets.info(table, :owner)
 
   @doc """
@@ -131,10 +131,9 @@ defmodule Eternal do
       :ok
 
   """
-  @spec stop(table :: Table.t()) :: :ok
-  def stop(table) when is_table(table) do
-    name = Table.to_name(table)
-    proc = GenServer.whereis(name)
+  @spec stop(table :: atom) :: :ok
+  def stop(table) when is_atom(table) do
+    proc = GenServer.whereis(table)
 
     if proc && Process.alive?(proc) do
       Supervisor.stop(proc)
