@@ -46,7 +46,7 @@ defmodule Eternal.Supervisor do
   # sets up a child spec containing the two GenServers, passing through arguments
   # as necessary. We also ensure that the Logger application is started at this
   # point, just in case the user has been unable to start it for some reason.
-  @spec init({table :: Table.t(), opts :: Keyword.t()}) :: {:ok, tuple}
+  @spec init({table :: Table.t(), opts :: Keyword.t(), base :: pid}) :: {:ok, tuple}
   def init({table, opts, base}) do
     flags = Keyword.take(opts, [:monitor, :quiet])
 
